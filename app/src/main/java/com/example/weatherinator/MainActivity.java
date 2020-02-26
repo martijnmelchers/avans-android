@@ -2,17 +2,24 @@ package com.example.weatherinator;
 
 import android.os.Bundle;
 
+import com.example.weatherinator.models.WeatherLocation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,32 @@ public class MainActivity extends AppCompatActivity {
                     .setAction("Action", null).show();
             }
         });
+
+
+        setContentView(R.layout.fragment_first);
+
+        // Lookup the recyclerview in activity layout
+        RecyclerView rvContacts = (RecyclerView) findViewById(R.id.rvLocations);
+
+        // Initialize contacts
+        String[] test = { "sdsadasd", "Martijn", "Test", "Sascha"};
+        // Create adapter passing in the sample user data
+        WeatherAdapter adapter = new WeatherAdapter(test);
+        // Attach the adapter to the recyclerview to populate items
+        rvContacts.setAdapter(adapter);
+        // Set layout manager to position the items
+        rvContacts.setLayoutManager(new LinearLayoutManager(this));
+
+
+        OpenWeatherApi api = new OpenWeatherApi();
+
+        try{
+            WeatherLocation loc =  api.execute("London").get();
+            System.out.println("test");
+        }
+        catch (Exception e){
+            System.out.println();
+        }
     }
 
     @Override
