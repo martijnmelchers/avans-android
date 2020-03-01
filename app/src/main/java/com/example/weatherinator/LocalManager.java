@@ -22,7 +22,7 @@ public class LocalManager {
             LocalLocation location = new LocalLocation(name);
 
             if(!image.equals("none"))
-                location.setImageSource(new Uri.Builder().appendPath(image).build());
+                location.setImageSource(Uri.parse(image));
 
             savedLocations.add(location);
         }

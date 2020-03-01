@@ -1,6 +1,8 @@
 package com.example.weatherinator;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -10,8 +12,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.weatherinator.models.Coord;
@@ -24,6 +26,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public List<LocalLocation> savedLocations = new ArrayList<>();
+    public boolean networkAvailable = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +36,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         startNetworkListener();
+
+
+    }
+
+    private void Init(){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         savedLocations = LocalManager.GetLocations(sharedPref);
 
         try {
@@ -42,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
         }
-
     }
 
     public class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
@@ -91,12 +99,39 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onLost(Network network) {
                         // When network connection is lost, close the app
-                        MainActivity.this.finish();
-                        System.exit(0);
+                        ShowDialog();
+                        networkAvailable = false;
+                    }
+
+                    @Override
+                    public void onAvailable(Network network){
+                        Init();
+                        networkAvailable = true;
                     }
                 }
+
         );
 
         return true;
     }
+
+
+    private void ShowDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Add the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+
+        // Create the AlertDialog
+        AlertDialog dialog = builder.create();
+    }
+    public void CommitLocations (){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        LocalManager.UpdateLocations(sharedPref,savedLocations);
+        return;
+    }
+
 }

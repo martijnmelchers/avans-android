@@ -33,13 +33,16 @@ import java.util.concurrent.ExecutionException;
 
 public class MainFragment extends Fragment {
     private WeatherAdapter adapter;
-
+    private LocationManager locationManager;
     @Override
     public View onCreateView(
         LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState
     ) {
         // Inflate the layout for this fragment
+
+        locationManager = (LocationManager)
+            getActivity().getSystemService(Context.LOCATION_SERVICE);
 
 
         return inflater.inflate(R.layout.main_fragment, container, false);
@@ -107,6 +110,13 @@ public class MainFragment extends Fragment {
         public void onLocationChanged(Location loc) {
             /*------- To get city name from coordinates -------- */
             try {
+                MainActivity activity = (MainActivity)getActivity();
+
+                if (!activity.networkAvailable){
+                    Toast.makeText(getActivity().getApplicationContext(), "WIFI is uitgeschakeld", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 WeatherLocation weather = new GetWeatherCoordTask().execute(new Coord(loc.getLatitude(), loc.getLongitude())).get();
                 LocalLocation location = new LocalLocation(weather.getName());
                 location.setWeather(weather);
@@ -137,10 +147,10 @@ public class MainFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void StartGPSTracking() {
-        LocationManager locationManager = (LocationManager)
-            getActivity().getSystemService(Context.LOCATION_SERVICE);
+        getActivity().findViewById(R.id.gpsConstraint).setVisibility(View.VISIBLE);
+        boolean gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        if ( !gps_enabled )
             Toast.makeText(getActivity().getApplicationContext(), "GPS is uitgeschakeld!", Toast.LENGTH_LONG).show();
         else {
             LocationListener locationListener = new WeatherLocationListener();
