@@ -53,4 +53,24 @@ public class LocalManager {
         sharedPreferences.edit().putString("saved_locations", encodedString.toString()).apply();
 
     }
+
+    public static void UpdateLocations(SharedPreferences sharedPreferences, List<LocalLocation> locations) {
+        StringBuilder encodedString = new StringBuilder();
+
+        for (int i = 0; i < locations.size(); i++) {
+            encodedString.append(locations.get(i).GetName());
+            encodedString.append("~");
+
+            if(locations.get(i).GetImageSource() != null)
+                encodedString.append(locations.get(i).GetImageSource().toString());
+            else
+                encodedString.append("none");
+
+            if(i != locations.size() - 1)
+                encodedString.append(",");
+        }
+
+        sharedPreferences.edit().putString("saved_locations", encodedString.toString()).apply();
+
+    }
 }

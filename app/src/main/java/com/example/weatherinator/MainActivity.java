@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         List<LocalLocation> savedLocations;
 
-        LocalManager.AddLocation(sharedPref, new LocalLocation("De Meern"));
+        //LocalManager.AddLocation(sharedPref, new LocalLocation("De Meern"));
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         // Set layout manager to position the items
         rvContacts.setLayoutManager(new LinearLayoutManager(this));
 
-        GetWeatherCoordTask GetWeather = new GetWeatherCoordTask();
         try {
             for (LocalLocation loc : savedLocations)
                 loc.setWeather(new GetWeatherTask().execute(loc.GetName()).get());
