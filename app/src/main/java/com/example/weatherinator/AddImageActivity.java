@@ -117,4 +117,9 @@ class CityAdapter  extends RecyclerView.Adapter<CityAdapter.CityViewHolder> {
             textView = v;
         }
     }
+
+    public void UpdateResults(List<LocalLocation> cities) {
+        this.cities = cities;
+        this.notifyDataSetChanged();
+    }
 }
