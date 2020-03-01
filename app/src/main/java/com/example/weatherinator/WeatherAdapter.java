@@ -11,13 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.weatherinator.models.LocalLocation;
+import com.example.weatherinator.models.WeatherLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
-    private List<LocalLocation> weatherDataset = new ArrayList<>();
+    private List<LocalLocation> weatherDataset;
 
     public WeatherAdapter(List<LocalLocation> weatherDataset){
         this.weatherDataset = weatherDataset;
@@ -64,5 +65,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             nameTextView = (TextView) itemView.findViewById(R.id.contact_name);
             messageButton = (Button) itemView.findViewById(R.id.message_button);
         }
+    }
+
+    public void addLocation(LocalLocation location) {
+        this.weatherDataset.add(location);
+        this.notifyDataSetChanged();
     }
 }

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -37,13 +38,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-
+    private WeatherAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,37 +77,15 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
-            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            LocationManager locationManager = (LocationManager)
+                    getSystemService(Context.LOCATION_SERVICE);
 
-            if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
                 Toast.makeText(this, "GPS is uitgeschakeld!", Toast.LENGTH_LONG).show();
-
-            List<String> x = lm.getAllProviders();
-
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-            if(location == null)
-                return;
-
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-
-            Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-            try {
-                Address address = gcd.getFromLocation(latitude, longitude, 1).get(0);
-                savedLocations.add(new LocalLocation(address.getLocality()));
-            } catch (IOException e) {
-                e.printStackTrace();
+            else {
+                LocationListener locationListener = new WeatherLocationListener();
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
             }
-
-//            try {
-//                WeatherLocation bruh = new GetWeatherCoordTask().execute(new Coord(longitude, latitude)).get();
-//                savedLocations.add(new LocalLocation(name));
-//            } catch (ExecutionException e) {
-//                e.printStackTrace();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
 
         }
 
@@ -114,9 +94,8 @@ public class MainActivity extends AppCompatActivity {
                 savedLocations.add(new LocalLocation(location));
 
 
-
         // Create adapter passing in the sample user data
-        WeatherAdapter adapter = new WeatherAdapter(savedLocations);
+        adapter = new WeatherAdapter(savedLocations);
         // Attach the adapter to the recyclerview to populate items
         rvContacts.setAdapter(adapter);
         // Set layout manager to position the items
@@ -129,8 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
         }
-
-
 
 
         Intent intent = getIntent();
@@ -186,5 +163,40 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /*---------- Listener class to get coordinates ------------- */
+    private class WeatherLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location loc) {
+            /*------- To get city name from coordinates -------- */
+
+            try {
+                WeatherLocation weather = new GetWeatherCoordTask().execute(new Coord(loc.getLatitude(), loc.getLongitude())).get();
+                LocalLocation location = new LocalLocation(weather.getName());
+                location.setWeather(weather);
+                adapter.addLocation(location);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
     }
 }
