@@ -19,4 +19,8 @@ public class WeatherLocation {
     public List<Weather> GetAllWeather(){
         return this.weather;
     }
+
+    public String getName() {
+        return name;
+    }
 }

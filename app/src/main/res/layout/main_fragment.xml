@@ -7,7 +7,7 @@
     android:paddingLeft="20px"
     android:paddingTop="20px"
     android:paddingRight="20px"
-    tools:context=".FirstFragment">
+    tools:context=".MainFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLocations"

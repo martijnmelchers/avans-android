@@ -1,19 +1,19 @@
 package com.example.weatherinator.models;
 
 public class Coord {
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 
-    public Coord(float latitude, float longitude){
+    public Coord(double latitude, double longitude){
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public float GetLat(){
+    public double GetLat(){
         return this.latitude;
     }
 
-    public float GetLong(){
+    public double GetLong(){
         return this.longitude;
     }
 }

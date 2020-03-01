@@ -10,4 +10,8 @@ public class Weather {
         this.main = main;
         this.description = description;
     }
+
+    public String getMain() {
+        return main;
+    }
 }

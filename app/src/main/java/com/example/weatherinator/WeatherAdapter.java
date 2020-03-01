@@ -45,7 +45,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         textView.setText(location.GetName());
 
         Button button = viewHolder.messageButton;
-        button.setText("Open");
+        button.setText(location.GetWeatherLocation().GetCurrentWeather().getMain());
         button.setEnabled(true);
     }
 
