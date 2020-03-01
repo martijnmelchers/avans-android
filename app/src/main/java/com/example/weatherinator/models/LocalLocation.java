@@ -26,7 +26,10 @@ public class LocalLocation {
     public Uri GetImageSource(){
         return this.imageSource;
     }
-    
+
+    public void setImageSource(Uri imageSource) {
+        this.imageSource = imageSource;
+    }
     private void SetImageSource(Uri imageSource){
         this.imageSource = imageSource;
     }
