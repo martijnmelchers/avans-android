@@ -61,15 +61,13 @@ public class MainFragment extends Fragment {
 
 
 
-        SharedPreferences sharedPref = getActivity().getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         // Lookup the recyclerview in activity layout
         final RecyclerView rvLocations = view.findViewById(R.id.rvLocations);
-        List<LocalLocation> savedLocations;
-        savedLocations = LocalManager.GetLocations(sharedPref);
+
 
         // Create adapter passing in the sample user data
-        adapter = new WeatherAdapter(savedLocations, new View.OnClickListener() {
+        adapter = new WeatherAdapter(((MainActivity) getActivity()).savedLocations, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
@@ -80,25 +78,16 @@ public class MainFragment extends Fragment {
 
         // Attach the adapter to the recyclerview to populate items
         rvLocations.setAdapter(adapter);
-
         // Set layout manager to position the items
         rvLocations.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-
-        try {
-            for (LocalLocation loc : savedLocations)
-                loc.setWeather(new GetWeatherTask().execute(loc.GetName()).get());
-
-        } catch (Exception e) {
-        }
-
 
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
             StartGPSTracking();
         }
-    }
 
+    }
 
     public class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
         public WeatherLocation doInBackground(String... params) {
@@ -114,28 +103,25 @@ public class MainFragment extends Fragment {
         }
     }
 
-
     /*---------- Listener class to get coordinates ------------- */
     private class WeatherLocationListener implements LocationListener {
-
         @Override
         public void onLocationChanged(Location loc) {
             /*------- To get city name from coordinates -------- */
-
             try {
                 WeatherLocation weather = new GetWeatherCoordTask().execute(new Coord(loc.getLatitude(), loc.getLongitude())).get();
                 LocalLocation location = new LocalLocation(weather.getName());
                 location.setWeather(weather);
-                ((TextView) getActivity().findViewById(R.id.currentGPSLocation)).setText(weather.getName());
+
+                ((TextView)getView().findViewById(R.id.currentGPSLocation)).setText(weather.getName());
+
+
                 //adapter.addLocation(location);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-
-
         }
 
         @Override
@@ -154,7 +140,7 @@ public class MainFragment extends Fragment {
     @SuppressLint("MissingPermission")
     private void StartGPSTracking() {
         LocationManager locationManager = (LocationManager)
-                getActivity().getSystemService(Context.LOCATION_SERVICE);
+            getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
             Toast.makeText(getActivity().getApplicationContext(), "GPS is uitgeschakeld!", Toast.LENGTH_LONG).show();
@@ -172,4 +158,5 @@ public class MainFragment extends Fragment {
         if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
             StartGPSTracking();
     }
+
 }

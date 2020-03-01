@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.weatherinator.models.LocalLocation;
+
 public class WeatherDetailFragment extends Fragment {
 
     @Override
@@ -23,5 +25,6 @@ public class WeatherDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         int currentItem = getArguments().getInt("localId", 0);
+        LocalLocation item = ((MainActivity)getActivity()).savedLocations.get(currentItem);
     }
 }
