@@ -1,10 +1,14 @@
 package com.example.weatherinator;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,6 +52,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         Button button = viewHolder.messageButton;
         button.setText(location.GetWeatherLocation().GetCurrentWeather().getMain());
         button.setEnabled(true);
+
+
+        Uri imageSource = this.weatherDataset.get(position).GetImageSource();
+        if(imageSource != null){
+            viewHolder.backGround.setImageURI(imageSource.normalizeScheme());
+
+        }
+
+
     }
 
     @Override
@@ -61,6 +74,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         public TextView detailsTextView;
         public TextView temperatureTextView;
         public Button messageButton;
+        public ImageView backGround;
         // each data item is just a string in this case
         public WeatherViewHolder(View v) {
             super(v);
@@ -68,6 +82,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
             detailsTextView = (TextView) itemView.findViewById(R.id.status);
             temperatureTextView = (TextView) itemView.findViewById(R.id.temperature);
             messageButton = (Button) itemView.findViewById(R.id.message_button);
+            backGround = (ImageView) itemView.findViewById(R.id.backGround);
         }
     }
 

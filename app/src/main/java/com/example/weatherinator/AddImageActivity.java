@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +33,9 @@ import java.util.Objects;
 public class AddImageActivity extends AppCompatActivity {
     private CityAdapter adapter;
     private int selectedItem = -1;
+    private Uri imageUri;
+    private List<LocalLocation> savedLocations;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,11 +51,23 @@ public class AddImageActivity extends AppCompatActivity {
             }
         });
 
+
+        final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        Button confirmButton = findViewById(R.id.confirmButton);
+        confirmButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                LocalLocation location = savedLocations.get(selectedItem);
+                location.setImageSource(imageUri);
+                LocalManager.UpdateLocations(sharedPref, savedLocations);
+            }
+        });
+
         // Lookup the recyclerview in activity layout
         final RecyclerView rvCities = findViewById(R.id.selectLocationRv);
 
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        List<LocalLocation> savedLocations = LocalManager.GetLocations(sharedPref);
+        savedLocations = LocalManager.GetLocations(sharedPref);
 
         adapter = new CityAdapter(savedLocations, new View.OnClickListener() {
             @Override
@@ -82,16 +98,15 @@ public class AddImageActivity extends AppCompatActivity {
 
         if (action.equals(Intent.ACTION_SEND)) {
             if (Objects.requireNonNull(intent.getType()).startsWith("image/")) {
-                //handleImageShare(intent);
+               imageUri =  handleImageShare(intent);
             }
         }
     }
 
 
-    private void handleImageShare(Intent intent) {
+    private Uri handleImageShare(Intent intent) {
         Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        System.out.println(imageUri);
-
+        return imageUri;
     }
 }
 
