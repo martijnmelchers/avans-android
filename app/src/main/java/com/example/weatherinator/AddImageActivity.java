@@ -92,8 +92,6 @@ public class AddImageActivity extends AppCompatActivity {
         Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
         System.out.println(imageUri);
 
-        ImageView imgView = (ImageView) findViewById(R.id.iv);
-        imgView.setImageURI(imageUri);
     }
 }
 
