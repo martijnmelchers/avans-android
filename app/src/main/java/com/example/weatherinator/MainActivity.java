@@ -3,6 +3,7 @@ package com.example.weatherinator;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -31,6 +32,7 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -50,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+                        .setAction("Action", null).show();
+
             }
         });
 
@@ -58,68 +61,68 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_first);
 
         // Lookup the recyclerview in activity layout
-        RecyclerView rvContacts = (RecyclerView) findViewById(R.id.rvLocations);
+        RecyclerView rvContacts = findViewById(R.id.rvLocations);
 
-        // Initialize contacts
-        List<LocalLocation> locations = new ArrayList<LocalLocation>(){ {
-            add(new LocalLocation("Wijk bij Duurstede"));
-            add(new LocalLocation("Doorn"));
-            add(new LocalLocation("Zeist"));
-            add(new LocalLocation("De Meern"));
-        }};
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+
+        List<LocalLocation> savedLocations = new ArrayList<>();
+
+        for (String location : sharedPref.getString("saved_locations", "").split(","))
+            if (!location.equals(""))
+                savedLocations.add(new LocalLocation(location));
+
+
+//        // Initialize contacts
+//        List<LocalLocation> locations = new ArrayList<LocalLocation>(){ {
+//            add(new LocalLocation("Wijk bij Duurstede"));
+//            add(new LocalLocation("Doorn"));
+//            add(new LocalLocation("Zeist"));
+//            add(new LocalLocation("De Meern"));
+//        }};
+
 
         // Create adapter passing in the sample user data
-        WeatherAdapter adapter = new WeatherAdapter(locations);
+        WeatherAdapter adapter = new WeatherAdapter(savedLocations);
         // Attach the adapter to the recyclerview to populate items
         rvContacts.setAdapter(adapter);
         // Set layout manager to position the items
         rvContacts.setLayoutManager(new LinearLayoutManager(this));
 
         GetWeatherCoordTask GetWeather = new GetWeatherCoordTask();
-        try{
-            for (LocalLocation loc:
-                locations) {
-
+        try {
+            for (LocalLocation loc : savedLocations)
                 loc.setWeather(new GetWeatherTask().execute(loc.GetName()).get());
-            }
-        }
-        catch (Exception e) { }
 
-        try{
-            WeatherLocation loc =  GetWeather.execute(new Coord( (float)35.02,(float)139.01)).get();
-            System.out.println("test");
-        }
-        catch (Exception e){
-            System.out.println();
+        } catch (Exception e) {
         }
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },  1);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
 
 
         Intent intent = getIntent();
         String action = intent.getAction();
 
-        if(action == Intent.ACTION_SEND){
-            if(intent.getType().startsWith("image/")){
+        if (action.equals(Intent.ACTION_SEND)) {
+            if (Objects.requireNonNull(intent.getType()).startsWith("image/")) {
                 handleImageShare(intent);
             }
         }
     }
 
 
-
-    private void handleImageShare(Intent intent){
+    private void handleImageShare(Intent intent) {
         Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
         System.out.println(imageUri);
 
-        ImageView imgView = (ImageView)findViewById(R.id.iv);
+        ImageView imgView = (ImageView) findViewById(R.id.iv);
         imgView.setImageURI(imageUri);
     }
 
     public class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
-        public WeatherLocation doInBackground(String... params){
+        public WeatherLocation doInBackground(String... params) {
             OpenWeatherApi api = new OpenWeatherApi();
             return api.GetWeather(params[0]);
         }
