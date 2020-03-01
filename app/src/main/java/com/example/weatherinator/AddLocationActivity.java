@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 
 import com.example.weatherinator.models.LocalLocation;
@@ -55,7 +56,12 @@ public class AddLocationActivity extends AppCompatActivity {
 
         RecyclerView rvCities = findViewById(R.id.recyclerView);
 
-        adapter = new CityAdapter(new ArrayList<LocalLocation>());
+        adapter = new CityAdapter(new ArrayList<LocalLocation>(), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setSelected(true);
+            }
+        });
         geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
         rvCities.setAdapter(adapter);
