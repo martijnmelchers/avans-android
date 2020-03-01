@@ -1,5 +1,9 @@
 package com.example.weatherinator;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.weatherinator.models.LocalLocation;
 
 public class WeatherDetailFragment extends Fragment {
+    private int currentIndex;
 
     @Override
     public View onCreateView(
@@ -24,7 +29,39 @@ public class WeatherDetailFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int currentItem = getArguments().getInt("localId", 0);
+        final int currentItem = getArguments().getInt("localId", 0);
         LocalLocation item = ((MainActivity)getActivity()).savedLocations.get(currentItem);
+        this.currentIndex = currentItem;
+        view.findViewById(R.id.setBackgroundButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("image/*");
+
+
+                Bundle extras = new Bundle();
+                extras.putString("Username", "data");
+                intent.putExtras(extras); //notice the different method
+
+
+                startActivityForResult(Intent.createChooser(intent, "Selecteer een achtergrond"), 100);
+            }
+        });
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==100){
+            Uri uri=data.getData();
+            int index = this.currentIndex;
+            MainActivity activity = ((MainActivity)getActivity());
+            activity.savedLocations.get(index).setImageSource(uri);
+            SharedPreferences sharedPref = getActivity().getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            LocalManager.UpdateLocations(sharedPref,activity.savedLocations);
+        }
+    }
+
 }
