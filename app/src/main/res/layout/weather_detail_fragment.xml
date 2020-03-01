@@ -6,6 +6,64 @@
     android:layout_height="match_parent"
     tools:context=".WeatherDetailFragment">
 
+    <ImageView
+        android:id="@+id/detailsImage"
+        android:layout_width="fill_parent"
+        android:layout_height="178dp"
+        android:scaleType="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/default_background"
+        tools:src="@tools:sample/backgrounds/scenic"
+        tools:srcCompat="@tools:sample/backgrounds/scenic[0]" />
+
+    <TextView
+        android:id="@+id/detailName"
+        android:layout_width="410dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="24dp"
+        android:shadowColor="#000"
+        android:shadowRadius="10"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Wijk bij Duurstede" />
+
+    <TextView
+        android:id="@+id/detailSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="40dp"
+        android:shadowColor="#000"
+        android:shadowRadius="10"
+        android:textColor="#fff"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailName"
+        tools:text="16c" />
+
+    <TextView
+        android:id="@+id/detailTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"
+        android:shadowColor="#000"
+        android:shadowRadius="10"
+        android:textColor="#fff"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detailName"
+        tools:text="Zonnig" />
+
     <Button
         android:id="@+id/setBackgroundButton"
         android:layout_width="wrap_content"
@@ -16,4 +74,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

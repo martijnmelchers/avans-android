@@ -9,7 +9,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     public List<LocalLocation> savedLocations = new ArrayList<>();
     public String currentLocation = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +92,35 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest.Builder builder = new NetworkRequest.Builder();
+
+        connectivityManager.registerNetworkCallback(
+                builder.build(),
+                new ConnectivityManager.NetworkCallback() {
+                    /**
+                     * @param network
+                     */
+                    @Override
+                    public void onAvailable(Network network) {
+
+                    }
+
+                    /**
+                     * @param network
+                     */
+                    @Override
+                    public void onLost(Network network) {
+
+                    }
+                }
+
+        );
+
+        return true;
     }
 
 }

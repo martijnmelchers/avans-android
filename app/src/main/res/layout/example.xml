@@ -7,34 +7,19 @@
     android:layout_height="wrap_content"
     android:layout_gravity="clip_horizontal|center_horizontal|fill_horizontal">
 
-    <ImageView
-        android:id="@+id/backGround"
-        android:layout_width="420dp"
-        android:layout_height="60dp"
-        android:scaleType="centerCrop"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/message_button"
-        app:layout_constraintHorizontal_bias="0.357"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
     <TextView
         android:id="@+id/contact_name"
         android:layout_width="278dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
-        android:elevation="10px"
-        android:text="Wijk bij Duurstede"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/message_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Wijk bij Duurstede" />
 
     <Button
         android:id="@+id/message_button"
@@ -57,10 +42,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:elevation="10px"
-        android:text="Zonnig"
         app:layout_constraintStart_toStartOf="@+id/contact_name"
-        app:layout_constraintTop_toBottomOf="@+id/contact_name" />
+        app:layout_constraintTop_toBottomOf="@+id/contact_name"
+        tools:text="Zonnig" />
 
     <TextView
         android:id="@+id/temperature"
@@ -68,9 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginTop="4dp"
-        android:elevation="10px"
-        android:text="16c"
         app:layout_constraintStart_toEndOf="@+id/status"
-        app:layout_constraintTop_toBottomOf="@+id/contact_name" />
+        app:layout_constraintTop_toBottomOf="@+id/contact_name"
+        tools:text="16°C" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

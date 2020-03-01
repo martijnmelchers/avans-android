@@ -56,7 +56,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         viewHolder.detailsTextView.setText(descriptionUppercase);
 
         WeatherLocation weatherLocation = location.GetWeatherLocation();
-        viewHolder.temperatureTextView.setText(Float.toString(weatherLocation.getWeatherMain().getTemp()) + "°C");
+        viewHolder.temperatureTextView.setText(weatherLocation.getWeatherMain().getTemp() + "°C");
 
         Uri imageSource = this.weatherDataset.get(position).GetImageSource();
         if(imageSource != null){
@@ -80,16 +80,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         // each data item is just a string in this case
         public WeatherViewHolder(View v) {
             super(v);
-            nameTextView = (TextView) itemView.findViewById(R.id.contact_name);
-            detailsTextView = (TextView) itemView.findViewById(R.id.status);
-            temperatureTextView = (TextView) itemView.findViewById(R.id.temperature);
-            messageButton = (Button) itemView.findViewById(R.id.message_button);
-            backGround = (ImageView) itemView.findViewById(R.id.backGround);
+            nameTextView = itemView.findViewById(R.id.contact_name);
+            detailsTextView = itemView.findViewById(R.id.status);
+            temperatureTextView = itemView.findViewById(R.id.temperature);
+            messageButton = itemView.findViewById(R.id.message_button);
         }
-    }
-
-    public void addLocation(LocalLocation location) {
-        this.weatherDataset.add(location);
-        this.notifyDataSetChanged();
     }
 }
