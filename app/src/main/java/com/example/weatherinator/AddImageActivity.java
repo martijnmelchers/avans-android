@@ -86,7 +86,7 @@ class CityAdapter  extends RecyclerView.Adapter<CityAdapter.CityViewHolder> {
     @Override
     public CityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
-        TextView v = (TextView) LayoutInflater.from(parent.getContext())
+        View v = (View) LayoutInflater.from(parent.getContext())
             .inflate(R.layout.city, parent, false);
 
         CityViewHolder vh = new CityViewHolder(v);
@@ -95,7 +95,8 @@ class CityAdapter  extends RecyclerView.Adapter<CityAdapter.CityViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CityAdapter.CityViewHolder holder, int position) {
-        holder.textView.setText(cities.get(0).GetName());
+        TextView text = holder.textView.findViewById(R.id.cityText);
+        text.setText(this.cities.get(position).GetName());
     }
 
     @Override
@@ -109,9 +110,9 @@ class CityAdapter  extends RecyclerView.Adapter<CityAdapter.CityViewHolder> {
     }
 
     public static class CityViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
+        public View textView;
 
-        public CityViewHolder(@NonNull TextView v) {
+        public CityViewHolder(@NonNull View v) {
             super(v);
             textView = v;
         }

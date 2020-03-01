@@ -2,6 +2,7 @@ package com.example.weatherinator;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -40,18 +41,17 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        setContentView(R.layout.main_fragment);
+
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
+                startActivity(new Intent(MainActivity.this, AddLocationActivity.class));
             }
         });
 
-
-        setContentView(R.layout.main_fragment);
 
         // Lookup the recyclerview in activity layout
         RecyclerView rvContacts = findViewById(R.id.rvLocations);
