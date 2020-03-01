@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,7 +29,6 @@ import com.example.weatherinator.models.LocalLocation;
 import com.example.weatherinator.models.WeatherLocation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainFragment extends Fragment {
@@ -82,7 +80,7 @@ public class MainFragment extends Fragment {
         rvLocations.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
             StartGPSTracking();
         }
