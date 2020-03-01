@@ -1,6 +1,7 @@
 package com.example.weatherinator;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -93,16 +95,7 @@ public class MainFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
-            LocationManager locationManager = (LocationManager)
-                getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                Toast.makeText(getActivity().getApplicationContext(), "GPS is uitgeschakeld!", Toast.LENGTH_LONG).show();
-            else {
-                LocationListener locationListener = new WeatherLocationListener();
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-            }
-
+            StartGPSTracking();
         }
     }
 
@@ -133,7 +126,8 @@ public class MainFragment extends Fragment {
                 WeatherLocation weather = new GetWeatherCoordTask().execute(new Coord(loc.getLatitude(), loc.getLongitude())).get();
                 LocalLocation location = new LocalLocation(weather.getName());
                 location.setWeather(weather);
-                adapter.addLocation(location);
+                ((TextView) getActivity().findViewById(R.id.currentGPSLocation)).setText(weather.getName());
+                //adapter.addLocation(location);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -155,5 +149,27 @@ public class MainFragment extends Fragment {
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void StartGPSTracking() {
+        LocationManager locationManager = (LocationManager)
+                getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            Toast.makeText(getActivity().getApplicationContext(), "GPS is uitgeschakeld!", Toast.LENGTH_LONG).show();
+        else {
+            LocationListener locationListener = new WeatherLocationListener();
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode != 1)
+            return;
+
+        if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            StartGPSTracking();
     }
 }

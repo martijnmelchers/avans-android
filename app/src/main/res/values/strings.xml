@@ -11,4 +11,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="preference_file_key">weatherinator_shared_prefs</string>
     <string name="title_activity_add_image">AddImageActivity</string>
+
+    <string name="current_location">Het weer op dit moment in: </string>
+    <string name="current_location_header">Huidige Locatie</string>
 </resources>

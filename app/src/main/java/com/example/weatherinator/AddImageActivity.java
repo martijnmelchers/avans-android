@@ -112,7 +112,7 @@ public class AddImageActivity extends AppCompatActivity {
 
 
 class CityAdapter  extends RecyclerView.Adapter<CityAdapter.CityViewHolder> {
-    private List<LocalLocation> cities = new ArrayList<>();
+    private List<LocalLocation> cities;
     private View.OnClickListener listener;
 
     @NonNull

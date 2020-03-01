@@ -49,11 +49,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
         // Set item views based on your views and data model
         viewHolder.nameTextView.setText(location.GetName());
-        viewHolder.detailsTextView.setText(location.GetWeatherLocation().GetCurrentWeather().GetDescription());
 
-        Button button = viewHolder.messageButton;
-        button.setText(location.GetWeatherLocation().GetCurrentWeather().getMain());
-        button.setEnabled(true);
+        String description = location.GetWeatherLocation().GetCurrentWeather().GetDescription();
+        String descriptionUppercase = description.substring(0, 1).toUpperCase() + description.substring(1);
+        
+        viewHolder.detailsTextView.setText(descriptionUppercase);
+//
+//        Button button = viewHolder.messageButton;
+//        button.setText(location.GetWeatherLocation().GetCurrentWeather().getMain());
+//        button.setEnabled(true);
 
 
         Uri imageSource = this.weatherDataset.get(position).GetImageSource();
