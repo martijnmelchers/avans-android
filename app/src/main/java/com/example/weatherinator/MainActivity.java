@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
-            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            LocationManager lm = (LocationManager)getSystemService(LOCATION_SERVICE);
 
             if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
                 Toast.makeText(this, "GPS is uitgeschakeld!", Toast.LENGTH_LONG).show();
@@ -108,12 +108,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 
         }
-
-        for (String location : sharedPref.getString("saved_locations", "").split(","))
-            if (!location.equals(""))
-                savedLocations.add(new LocalLocation(location));
-
-
+        savedLocations = LocalManager.GetLocations(sharedPref);
 
         // Create adapter passing in the sample user data
         WeatherAdapter adapter = new WeatherAdapter(savedLocations);
@@ -129,28 +124,10 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
         }
-
-
-
-
-        Intent intent = getIntent();
-        String action = intent.getAction();
-
-        if (action.equals(Intent.ACTION_SEND)) {
-            if (Objects.requireNonNull(intent.getType()).startsWith("image/")) {
-                handleImageShare(intent);
-            }
-        }
     }
 
 
-    private void handleImageShare(Intent intent) {
-        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        System.out.println(imageUri);
 
-        ImageView imgView = (ImageView) findViewById(R.id.iv);
-        imgView.setImageURI(imageUri);
-    }
 
     public class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
         public WeatherLocation doInBackground(String... params) {
