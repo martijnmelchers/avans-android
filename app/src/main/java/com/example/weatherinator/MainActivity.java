@@ -2,23 +2,17 @@ package com.example.weatherinator;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import com.example.weatherinator.models.Coord;
-import com.example.weatherinator.models.LocalLocation;
-import com.example.weatherinator.models.WeatherLocation;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,24 +21,16 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.Toast;
+import com.example.weatherinator.models.Coord;
+import com.example.weatherinator.models.LocalLocation;
+import com.example.weatherinator.models.WeatherLocation;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
     private WeatherAdapter adapter;
 
     @Override
@@ -71,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView rvContacts = findViewById(R.id.rvLocations);
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        List<LocalLocation> savedLocations = new ArrayList<>();
+        List<LocalLocation> savedLocations;
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -89,10 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        for (String location : sharedPref.getString("saved_locations", "").split(","))
-            if (!location.equals(""))
-                savedLocations.add(new LocalLocation(location));
-
+        savedLocations = LocalManager.GetLocations(sharedPref);
 
         // Create adapter passing in the sample user data
         adapter = new WeatherAdapter(savedLocations);
@@ -108,25 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
         }
-
-
-        Intent intent = getIntent();
-        String action = intent.getAction();
-
-        if (action.equals(Intent.ACTION_SEND)) {
-            if (Objects.requireNonNull(intent.getType()).startsWith("image/")) {
-                handleImageShare(intent);
-            }
-        }
-    }
-
-
-    private void handleImageShare(Intent intent) {
-        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        System.out.println(imageUri);
-
-        ImageView imgView = (ImageView) findViewById(R.id.iv);
-        imgView.setImageURI(imageUri);
     }
 
     public class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
