@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onAvailable(Network network){
-                        Init();
                         networkAvailable = true;
+                        Init();
                     }
                 }
 
@@ -124,9 +124,10 @@ public class MainActivity extends AppCompatActivity {
                 // User clicked OK button
             }
         });
-
+        builder.setMessage("Geen internetverbinding gevonden");
         // Create the AlertDialog
         AlertDialog dialog = builder.create();
+        dialog.show();
     }
     public void CommitLocations (){
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);

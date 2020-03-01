@@ -117,7 +117,19 @@ public class MainFragment extends Fragment {
                     return;
                 }
 
+                boolean gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if(!gps_enabled){
+                    Toast.makeText(getActivity().getApplicationContext(), "GPS is uitgeschakeld", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 WeatherLocation weather = new GetWeatherCoordTask().execute(new Coord(loc.getLatitude(), loc.getLongitude())).get();
+
+                if(weather == null){
+                    Toast.makeText(getActivity().getApplicationContext(), "WIFI is uitgeschakeld", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                
                 LocalLocation location = new LocalLocation(weather.getName());
                 location.setWeather(weather);
 
