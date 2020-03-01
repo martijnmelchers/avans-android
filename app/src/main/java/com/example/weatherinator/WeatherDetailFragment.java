@@ -29,11 +29,15 @@ public class WeatherDetailFragment extends Fragment {
         LocalLocation item = ((MainActivity)getActivity()).savedLocations.get(currentItem);
 
         ((TextView)getActivity().findViewById(R.id.detailName)).setText(item.GetName());
-        ((TextView)getActivity().findViewById(R.id.detailTemperature)).setText(item.GetWeatherLocation().getWeatherMain().getTemp() + "°C");
+        ((TextView)getActivity().findViewById(R.id.detailTemperature)).setText(item.GetWeatherLocation().getWeatherMain().getTemp() + getString(R.string.celciusText));
 
         String description = item.GetWeatherLocation().GetCurrentWeather().GetDescription();
         String descriptionUppercase = description.substring(0, 1).toUpperCase() + description.substring(1);
 
         ((TextView)getActivity().findViewById(R.id.detailSummary)).setText(descriptionUppercase);
+
+        ((TextView)getActivity().findViewById(R.id.detailFeelsLike)).setText(item.GetWeatherLocation().getWeatherMain().getFeels_like() + getString(R.string.celciusText));
+        ((TextView)getActivity().findViewById(R.id.detailMinimum)).setText(item.GetWeatherLocation().getWeatherMain().getTemp_min() + getString(R.string.celciusText));
+        ((TextView)getActivity().findViewById(R.id.detailMaximum)).setText(item.GetWeatherLocation().getWeatherMain().getTemp_max() + getString(R.string.celciusText));
     }
 }
