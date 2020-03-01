@@ -1,6 +1,8 @@
 package com.example.weatherinator;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +36,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
-    private WeatherAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,72 +44,17 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setContentView(R.layout.main_fragment);
 
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AddLocationActivity.class));
-            }
-        });
-
-
-        // Lookup the recyclerview in activity layout
-        RecyclerView rvContacts = findViewById(R.id.rvLocations);
+        FloatingActionButton fab = findViewById(R.id.floatingButton);
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         List<LocalLocation> savedLocations;
 
         //LocalManager.AddLocation(sharedPref, new LocalLocation("De Meern"));
 
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
-            LocationManager locationManager = (LocationManager)
-                    getSystemService(Context.LOCATION_SERVICE);
-
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                Toast.makeText(this, "GPS is uitgeschakeld!", Toast.LENGTH_LONG).show();
-            else {
-                LocationListener locationListener = new WeatherLocationListener();
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
-            }
-
-        }
-
-        savedLocations = LocalManager.GetLocations(sharedPref);
-
-        // Create adapter passing in the sample user data
-        adapter = new WeatherAdapter(savedLocations);
-        // Attach the adapter to the recyclerview to populate items
-        rvContacts.setAdapter(adapter);
-        // Set layout manager to position the items
-        rvContacts.setLayoutManager(new LinearLayoutManager(this));
-
-        try {
-            for (LocalLocation loc : savedLocations)
-                loc.setWeather(new GetWeatherTask().execute(loc.GetName()).get());
-
-        } catch (Exception e) {
-        }
     }
 
-    public class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
-        public WeatherLocation doInBackground(String... params) {
-            OpenWeatherApi api = new OpenWeatherApi();
-            return api.GetWeatherByString(params[0]);
-        }
-    }
 
-    public class GetWeatherCoordTask extends AsyncTask<Coord, String, WeatherLocation> {
-        public WeatherLocation doInBackground(Coord... params) {
-            OpenWeatherApi api = new OpenWeatherApi();
-            return api.GetWeatherByCoords(params[0]);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -130,38 +78,5 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*---------- Listener class to get coordinates ------------- */
-    private class WeatherLocationListener implements LocationListener {
 
-        @Override
-        public void onLocationChanged(Location loc) {
-            /*------- To get city name from coordinates -------- */
-
-            try {
-                WeatherLocation weather = new GetWeatherCoordTask().execute(new Coord(loc.getLatitude(), loc.getLongitude())).get();
-                LocalLocation location = new LocalLocation(weather.getName());
-                location.setWeather(weather);
-                adapter.addLocation(location);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    }
 }
