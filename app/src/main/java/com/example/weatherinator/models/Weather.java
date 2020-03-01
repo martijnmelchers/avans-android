@@ -14,4 +14,8 @@ public class Weather {
     public String getMain() {
         return main;
     }
+
+    public String GetDescription() {
+        return this.description;
+    }
 }

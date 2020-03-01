@@ -46,8 +46,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         LocalLocation location = this.weatherDataset.get(position);
 
         // Set item views based on your views and data model
-        TextView textView = viewHolder.nameTextView;
-        textView.setText(location.GetName());
+        viewHolder.nameTextView.setText(location.GetName());
+        viewHolder.detailsTextView.setText(location.GetWeatherLocation().GetCurrentWeather().GetDescription());
 
         Button button = viewHolder.messageButton;
         button.setText(location.GetWeatherLocation().GetCurrentWeather().getMain());
@@ -71,12 +71,16 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
     public static class WeatherViewHolder extends RecyclerView.ViewHolder {
 
         public TextView nameTextView;
+        public TextView detailsTextView;
+        public TextView temperatureTextView;
         public Button messageButton;
         public ImageView backGround;
         // each data item is just a string in this case
         public WeatherViewHolder(View v) {
             super(v);
             nameTextView = (TextView) itemView.findViewById(R.id.contact_name);
+            detailsTextView = (TextView) itemView.findViewById(R.id.status);
+            temperatureTextView = (TextView) itemView.findViewById(R.id.temperature);
             messageButton = (Button) itemView.findViewById(R.id.message_button);
             backGround = (ImageView) itemView.findViewById(R.id.backGround);
         }
