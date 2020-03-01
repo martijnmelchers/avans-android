@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -134,7 +133,7 @@ public class MainFragment extends Fragment {
                 location.setWeather(weather);
 
                 ((TextView)getView().findViewById(R.id.currentGPSLocation)).setText(weather.getName());
-                ((TextView)getView().findViewById(R.id.currentTemp)).setText(Float.toString(weather.getWeatherMain().getTemp()) + "°C");
+                ((TextView)getView().findViewById(R.id.currentTemp)).setText(weather.getWeatherMain().getTemp() + getString(R.string.celciusText));
 
                 //adapter.addLocation(location);
             } catch (ExecutionException e) {
@@ -159,12 +158,12 @@ public class MainFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     private void StartGPSTracking() {
-        getActivity().findViewById(R.id.gpsConstraint).setVisibility(View.VISIBLE);
         boolean gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if ( !gps_enabled )
             Toast.makeText(getActivity().getApplicationContext(), "GPS is uitgeschakeld!", Toast.LENGTH_LONG).show();
         else {
+            getActivity().findViewById(R.id.gpsConstraint).setVisibility(View.VISIBLE);
             LocationListener locationListener = new WeatherLocationListener();
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
         }
