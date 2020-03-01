@@ -114,7 +114,7 @@ public class MainFragment extends Fragment {
                 location.setWeather(weather);
 
                 ((TextView)getView().findViewById(R.id.currentGPSLocation)).setText(weather.getName());
-
+                ((TextView)getView().findViewById(R.id.currentTemp)).setText(Float.toString(weather.getWeatherMain().getTemp()) + "°C");
 
                 //adapter.addLocation(location);
             } catch (ExecutionException e) {

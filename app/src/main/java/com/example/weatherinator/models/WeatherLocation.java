@@ -6,11 +6,12 @@ public class WeatherLocation {
     private List<Weather> weather;
     private Coord coord;
     private String name;
+    private WeatherMain main;
 
-
-    public WeatherLocation(String name, List<Weather> weather, Coord coord){
+    public WeatherLocation(String name, List<Weather> weather, Coord coord, WeatherMain main){
         this.name = name;
         this.weather = weather;
+        this.main = main;
         this.coord = coord;
     }
     public Weather GetCurrentWeather(){
@@ -22,5 +23,10 @@ public class WeatherLocation {
 
     public String getName() {
         return name;
+    }
+
+
+    public WeatherMain getWeatherMain() {
+        return this.main;
     }
 }
