@@ -7,13 +7,14 @@
     android:paddingLeft="20px"
     android:paddingTop="20px"
     android:paddingRight="20px"
+    android:windowSoftInputMode="adjustNothing"
     tools:context=".MainFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvLocations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteX="7dp"
         tools:layout_editor_absoluteY="3dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
