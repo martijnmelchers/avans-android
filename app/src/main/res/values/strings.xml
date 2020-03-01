@@ -14,4 +14,11 @@
 
     <string name="current_location">Het weer op dit moment in: </string>
     <string name="current_location_header">Huidige Locatie</string>
+    <string name="removeButton">Verwijderen</string>
+    <string name="selectImageButton">Afbeelding kiezen</string>
+    <string name="imageBackground">Achtergrond Afbeelding</string>
+    <string name="celciusText">°C</string>
+    <string name="minimumTemp">Minimum Temperatuur</string>
+    <string name="feelsLike">Voelt als</string>
+    <string name="maximumTemp">Maximum Temperatuur</string>
 </resources>

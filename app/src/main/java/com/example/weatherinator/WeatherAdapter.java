@@ -57,11 +57,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
         WeatherLocation weatherLocation = location.GetWeatherLocation();
         viewHolder.temperatureTextView.setText(weatherLocation.getWeatherMain().getTemp() + "°C");
-
         Uri imageSource = this.weatherDataset.get(position).GetImageSource();
-        if(imageSource != null){
-            viewHolder.backGround.setImageURI(imageSource.normalizeScheme());
-        }
+
         viewHolder.messageButton.setOnClickListener(this.onClickListener);
     }
 
@@ -76,7 +73,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         public TextView detailsTextView;
         public TextView temperatureTextView;
         public Button messageButton;
-        public ImageView backGround;
+
         // each data item is just a string in this case
         public WeatherViewHolder(View v) {
             super(v);

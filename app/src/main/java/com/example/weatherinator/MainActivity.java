@@ -123,4 +123,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
+    public void CommitLocations (){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        LocalManager.UpdateLocations(sharedPref,savedLocations);
+        return;
+    }
+
 }

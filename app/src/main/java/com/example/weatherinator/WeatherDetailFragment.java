@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,14 +35,17 @@ public class WeatherDetailFragment extends Fragment {
         LocalLocation item = ((MainActivity)getActivity()).savedLocations.get(currentItem);
 
         ((TextView)getActivity().findViewById(R.id.detailName)).setText(item.GetName());
-        ((TextView)getActivity().findViewById(R.id.detailTemperature)).setText(item.GetWeatherLocation().getWeatherMain().getTemp() + "°C");
+        ((TextView)getActivity().findViewById(R.id.detailTemperature)).setText(item.GetWeatherLocation().getWeatherMain().getTemp() + getString(R.string.celciusText));
 
         String description = item.GetWeatherLocation().GetCurrentWeather().GetDescription();
         String descriptionUppercase = description.substring(0, 1).toUpperCase() + description.substring(1);
 
         ((TextView)getActivity().findViewById(R.id.detailSummary)).setText(descriptionUppercase);
 
-
+        ((TextView)getActivity().findViewById(R.id.detailFeelsLike)).setText(item.GetWeatherLocation().getWeatherMain().getFeels_like() + getString(R.string.celciusText));
+        ((TextView)getActivity().findViewById(R.id.detailMinimum)).setText(item.GetWeatherLocation().getWeatherMain().getTemp_min() + getString(R.string.celciusText));
+        ((TextView)getActivity().findViewById(R.id.detailMaximum)).setText(item.GetWeatherLocation().getWeatherMain().getTemp_max() + getString(R.string.celciusText));
+        ((ImageView)getActivity().findViewById(R.id.detailsImage)).setImageURI(item.GetImageSource());
 
         this.currentIndex = currentItem;
         view.findViewById(R.id.setBackgroundButton).setOnClickListener(new View.OnClickListener() {
@@ -51,13 +55,19 @@ public class WeatherDetailFragment extends Fragment {
                 intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 intent.setType("image/*");
 
-
-                Bundle extras = new Bundle();
-                extras.putString("Username", "data");
-                intent.putExtras(extras); //notice the different method
-
-
                 startActivityForResult(Intent.createChooser(intent, "Selecteer een achtergrond"), 100);
+            }
+        });
+
+
+        view.findViewById(R.id.detailDelete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity activity = ((MainActivity)getActivity());
+                activity.savedLocations.remove(currentIndex);
+                currentIndex = -1;
+                activity.CommitLocations();
+                NavHostFragment.findNavController(WeatherDetailFragment.this).navigate(R.id.action_SecondFragment_to_FirstFragment);
             }
         });
     }
@@ -71,9 +81,12 @@ public class WeatherDetailFragment extends Fragment {
             int index = this.currentIndex;
             MainActivity activity = ((MainActivity)getActivity());
             activity.savedLocations.get(index).setImageSource(uri);
-            SharedPreferences sharedPref = getActivity().getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-            LocalManager.UpdateLocations(sharedPref,activity.savedLocations);
+            activity.CommitLocations();
+            this.Refresh();
         }
     }
 
+    private void Refresh(){
+        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
 }
