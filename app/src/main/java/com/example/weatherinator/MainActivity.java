@@ -3,6 +3,7 @@ package com.example.weatherinator;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -37,7 +38,6 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends AppCompatActivity {
 
     public List<LocalLocation> savedLocations = new ArrayList<>();
-    public String currentLocation = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        startNetworkListener();
         savedLocations = LocalManager.GetLocations(sharedPref);
 
         try {
@@ -94,27 +95,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean isNetworkAvailable() {
+    private boolean startNetworkListener() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest.Builder builder = new NetworkRequest.Builder();
 
         connectivityManager.registerNetworkCallback(
                 builder.build(),
                 new ConnectivityManager.NetworkCallback() {
-                    /**
-                     * @param network
-                     */
-                    @Override
-                    public void onAvailable(Network network) {
-
-                    }
-
-                    /**
-                     * @param network
-                     */
                     @Override
                     public void onLost(Network network) {
-
+                        // When network connection is lost, close the app
+                        MainActivity.this.finish();
+                        System.exit(0);
                     }
                 }
 
