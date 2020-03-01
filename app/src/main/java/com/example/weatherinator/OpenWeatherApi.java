@@ -6,6 +6,7 @@ import android.util.JsonReader;
 import com.example.weatherinator.models.Coord;
 import com.example.weatherinator.models.Weather;
 import com.example.weatherinator.models.WeatherLocation;
+import com.example.weatherinator.models.WeatherMain;
 
 import org.json.JSONObject;
 
@@ -79,6 +80,7 @@ public class OpenWeatherApi {
         List<Weather> weathers = new ArrayList<>();
         String cityname = null;
         Coord coord = null;
+        WeatherMain wMain = null;
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
@@ -94,6 +96,10 @@ public class OpenWeatherApi {
                     coord = readCoord(reader);
                     break;
                 }
+                case "main": {
+                    wMain = readMain(reader);
+                    break;
+                }
                 default: {
                     reader.skipValue();
                     break;
@@ -101,7 +107,7 @@ public class OpenWeatherApi {
             }
         }
         reader.endObject();
-        return new WeatherLocation(cityname, weathers, coord);
+        return new WeatherLocation(cityname, weathers, coord, wMain);
     }
 
 
@@ -142,6 +148,51 @@ public class OpenWeatherApi {
         }
         reader.endObject();
         return new Weather(id, main, description);
+    }
+
+
+
+    private WeatherMain readMain(JsonReader reader) throws IOException {
+        float temp = -1;
+        float feels_like = -1;
+        float temp_min = -1;
+        float temp_max = -1;
+        float pressure = -1;
+        float humidity = -1;
+
+
+        reader.beginObject();
+
+        while(reader.hasNext()){
+            String name = reader.nextName();
+
+            switch (name){
+                case "temp":
+                    temp = (float)reader.nextDouble();
+                    break;
+                case "feels_like":
+                    feels_like = (float)reader.nextDouble();
+                    break;
+                case "temp_max":
+                    temp_max = (float)reader.nextDouble();
+                    break;
+                case "temp_min":
+                    temp_min = (float)reader.nextDouble();
+                    break;
+                case "pressure":
+                    pressure = (float)reader.nextInt();
+                    break;
+                case "humidity":
+                    humidity = (float)reader.nextInt();
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
+            }
+        }
+
+        reader.endObject();
+        return new WeatherMain(temp,feels_like,temp_min, temp_max,pressure,humidity);
     }
 
 
