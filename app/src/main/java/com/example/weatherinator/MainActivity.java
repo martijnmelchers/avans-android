@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -38,6 +39,8 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends AppCompatActivity {
 
     public List<LocalLocation> savedLocations = new ArrayList<>();
+    public boolean networkAvailable = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         startNetworkListener();
+
+
+    }
+
+    private void Init(){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         savedLocations = LocalManager.GetLocations(sharedPref);
 
         try {
@@ -56,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
         }
-
     }
 
     public class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
@@ -105,8 +112,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onLost(Network network) {
                         // When network connection is lost, close the app
-                        MainActivity.this.finish();
-                        System.exit(0);
+                        ShowDialog();
+                        networkAvailable = false;
+                    }
+
+                    @Override
+                    public void onAvailable(Network network){
+                        Init();
+                        networkAvailable = true;
                     }
                 }
 
@@ -116,6 +129,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void ShowDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Add the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+
+        // Create the AlertDialog
+        AlertDialog dialog = builder.create();
+    }
     public void CommitLocations (){
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         LocalManager.UpdateLocations(sharedPref,savedLocations);
