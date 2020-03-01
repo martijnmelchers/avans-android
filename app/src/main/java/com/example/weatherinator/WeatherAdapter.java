@@ -10,12 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.weatherinator.models.LocalLocation;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
+    private List<LocalLocation> weatherDataset = new ArrayList<>();
 
-    private String[] weatherDataset;
-
-    public WeatherAdapter(String[] weatherDataset){
+    public WeatherAdapter(List<LocalLocation> weatherDataset){
         this.weatherDataset = weatherDataset;
     }
 
@@ -34,19 +38,20 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
     @Override
     public void onBindViewHolder(WeatherAdapter.WeatherViewHolder viewHolder, int position) {
         // Get the data model based on position
-        String s = this.weatherDataset[position];
+        LocalLocation location = this.weatherDataset.get(position);
 
         // Set item views based on your views and data model
         TextView textView = viewHolder.nameTextView;
-        textView.setText(s);
+        textView.setText(location.GetName());
+
         Button button = viewHolder.messageButton;
-        button.setText("Gamer");
+        button.setText("Open");
         button.setEnabled(true);
     }
 
     @Override
     public int getItemCount() {
-        return weatherDataset.length;
+        return weatherDataset.size();
     }
 
     public static class WeatherViewHolder extends RecyclerView.ViewHolder {

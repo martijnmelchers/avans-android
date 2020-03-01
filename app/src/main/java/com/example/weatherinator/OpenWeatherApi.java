@@ -3,6 +3,7 @@ package com.example.weatherinator;
 import android.os.AsyncTask;
 import android.util.JsonReader;
 
+import com.example.weatherinator.models.Coord;
 import com.example.weatherinator.models.Weather;
 import com.example.weatherinator.models.WeatherLocation;
 
@@ -20,27 +21,45 @@ import java.util.List;
 
 import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 
-public  class OpenWeatherApi extends AsyncTask<String, String, WeatherLocation> {
-
+public  class OpenWeatherApi  {
     private static String API_KEY = "7efca39694c9a2fd264aa8167338322f";
     public OpenWeatherApi(){
 
     }
 
-    public WeatherLocation doInBackground(String... params){
-        return GetWeather(params);
-    }
-
-    public WeatherLocation GetWeather(String... location){
-
+    public WeatherLocation GetWeather(Coord coord){
         WeatherLocation wLoc = null;
         URL url = null;
         try{
-            url = new URL("https://api.openweathermap.org/data/2.5/weather?q=London&appid=" + API_KEY);
+            url = new URL("https://api.openweathermap.org/data/2.5/weather?lat=" + coord.GetLat() + "&lon=" + coord.GetLong() + "&appid=" + API_KEY);
         }
         catch (MalformedURLException e)
         {}
 
+        try {
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+            wLoc =  readLocation(in);
+
+            urlConnection.disconnect();
+        }
+        catch (IOException e){
+            System.out.println("");
+        }
+
+        return wLoc;
+    }
+
+    public WeatherLocation GetWeather(String location){
+
+        WeatherLocation wLoc = null;
+        URL url = null;
+        try{
+            url = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + location + "&appid=" + API_KEY);
+        }
+        catch (MalformedURLException e)
+        {}
 
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -62,8 +81,7 @@ public  class OpenWeatherApi extends AsyncTask<String, String, WeatherLocation> 
         JsonReader reader = new JsonReader(new InputStreamReader(in));
         List<Weather> weathers = new ArrayList<>();
         String cityname = null;
-        float latitude = -1;
-        float longitude = -1;
+        Coord coord = null;
         reader.beginObject();
         while(reader.hasNext()){
             String name = reader.nextName();
@@ -75,9 +93,7 @@ public  class OpenWeatherApi extends AsyncTask<String, String, WeatherLocation> 
                 case "name": cityname = reader.nextString();
                     break;
                 case  "coord": {
-                    latitude = 0;
-                    longitude = 0;
-                    reader.skipValue();
+                    coord = readCoord(reader);
                     break;
                 }
                 default: {
@@ -87,7 +103,7 @@ public  class OpenWeatherApi extends AsyncTask<String, String, WeatherLocation> 
             }
         }
         reader.endObject();
-        return new WeatherLocation(cityname, weathers, longitude, latitude);
+        return new WeatherLocation(cityname, weathers, coord);
     }
 
 
@@ -124,5 +140,33 @@ public  class OpenWeatherApi extends AsyncTask<String, String, WeatherLocation> 
         }
         reader.endObject();
         return new Weather(id,main,description);
+    }
+
+
+    private Coord readCoord(JsonReader reader) throws IOException{
+        double latitude  = 0;
+        double longitude = 0;
+
+
+        reader.beginObject();
+
+        while(reader.hasNext()){
+            String name = reader.nextName();
+
+            switch(name){
+                case "lat":
+                    latitude = reader.nextDouble();
+                    break;
+                case "lon":
+                    longitude = reader.nextDouble();
+                    break;
+                default:
+                    reader.skipValue();
+                    break;
+            }
+        }
+
+        reader.endObject();
+        return new Coord((float) latitude, (float) longitude);
     }
 }

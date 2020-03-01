@@ -26,4 +26,16 @@
         android:src="@android:drawable/ic_menu_add"
         app:layout_constraintBottom_toBottomOf="@+id/rvLocations"
         app:layout_constraintEnd_toEndOf="@+id/rvLocations" />
+
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="80dp"
+        android:layout_height="73dp"
+        android:layout_margin="10dp"
+        android:layout_marginStart="165dp"
+        android:layout_marginBottom="724dp"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rvLocations"
+        app:layout_constraintStart_toStartOf="@+id/rvLocations" />
 </androidx.constraintlayout.widget.ConstraintLayout>
