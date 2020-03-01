@@ -89,7 +89,7 @@ public class MainFragment extends Fragment {
 
     }
 
-    public class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
+    public static class GetWeatherTask extends AsyncTask<String, String, WeatherLocation> {
         public WeatherLocation doInBackground(String... params) {
             OpenWeatherApi api = new OpenWeatherApi();
             return api.GetWeatherByString(params[0]);

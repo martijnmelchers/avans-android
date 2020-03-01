@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.weatherinator.models.LocalLocation;
 import com.example.weatherinator.models.WeatherLocation;
@@ -86,7 +87,18 @@ public class AddLocationActivity extends AppCompatActivity {
         adapter = new CityAdapter(new ArrayList<LocalLocation>(), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocalManager.AddLocation(sharedPref, new LocalLocation(((TextView) v.findViewById(R.id.cityText)).getText().toString()));
+                String locationString = ((TextView) v.findViewById(R.id.cityText)).getText().toString();
+                try {
+                    WeatherLocation exists = new MainFragment.GetWeatherTask().execute(locationString).get();
+
+                    if(exists != null)
+                        LocalManager.AddLocation(sharedPref, new LocalLocation(locationString));
+                    else
+                        Toast.makeText(getApplicationContext(), "Deze locatie is op dit moment niet beschikbaar!", Toast.LENGTH_LONG).show();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 startActivity(new Intent(AddLocationActivity.this, MainActivity.class));
             }
         });
