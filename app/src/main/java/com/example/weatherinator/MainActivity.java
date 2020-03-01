@@ -43,15 +43,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
-        FloatingActionButton fab = findViewById(R.id.floatingButton);
-
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        List<LocalLocation> savedLocations;
-
-        //LocalManager.AddLocation(sharedPref, new LocalLocation("De Meern"));
-
     }
 
 

@@ -22,5 +22,6 @@ public class WeatherDetailFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        int currentItem = getArguments().getInt("localId", 0);
     }
 }

@@ -12,15 +12,19 @@
         tools:layout="@layout/main_fragment">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/openDetails"
+            app:destination="@id/SecondFragment" >
+            <argument
+                android:name="localId"
+                app:argType="integer"
+                android:defaultValue="0" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.example.weatherinator.WeatherDetailFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/weather_detail_fragment">
-
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />

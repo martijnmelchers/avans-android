@@ -23,9 +23,11 @@ import java.util.List;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
     private List<LocalLocation> weatherDataset;
+    private View.OnClickListener onClickListener;
 
-    public WeatherAdapter(List<LocalLocation> weatherDataset){
+    public WeatherAdapter(List<LocalLocation> weatherDataset, View.OnClickListener onClickListener){
         this.weatherDataset = weatherDataset;
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
@@ -57,10 +59,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         Uri imageSource = this.weatherDataset.get(position).GetImageSource();
         if(imageSource != null){
             viewHolder.backGround.setImageURI(imageSource.normalizeScheme());
-
         }
-
-
+        viewHolder.messageButton.setOnClickListener(this.onClickListener);
     }
 
     @Override

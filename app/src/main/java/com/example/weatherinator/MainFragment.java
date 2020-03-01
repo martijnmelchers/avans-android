@@ -2,6 +2,7 @@ package com.example.weatherinator;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.weatherinator.models.Coord;
 import com.example.weatherinator.models.LocalLocation;
 import com.example.weatherinator.models.WeatherLocation;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -46,26 +48,39 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        view.findViewById(R.id.floatingButton).setOnClickListener(new View.OnClickListener() {
+
+        FloatingActionButton fab = view.findViewById(R.id.floatingButton);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(MainFragment.this).navigate(R.id.action_FirstFragment_to_SecondFragment);
+                startActivity(new Intent(getActivity(), AddLocationActivity.class));
             }
         });
+
+
 
         SharedPreferences sharedPref = getActivity().getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         // Lookup the recyclerview in activity layout
-        RecyclerView rvContacts = view.findViewById(R.id.rvLocations);
+        final RecyclerView rvLocations = view.findViewById(R.id.rvLocations);
         List<LocalLocation> savedLocations;
         savedLocations = LocalManager.GetLocations(sharedPref);
 
         // Create adapter passing in the sample user data
-        adapter = new WeatherAdapter(savedLocations);
+        adapter = new WeatherAdapter(savedLocations, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt("localId", rvLocations.findContainingViewHolder(v).getLayoutPosition());
+                NavHostFragment.findNavController(MainFragment.this).navigate(R.id.openDetails, args);
+            }
+        });
+
         // Attach the adapter to the recyclerview to populate items
-        rvContacts.setAdapter(adapter);
+        rvLocations.setAdapter(adapter);
+
         // Set layout manager to position the items
-        rvContacts.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        rvLocations.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
 
         try {
             for (LocalLocation loc : savedLocations)
