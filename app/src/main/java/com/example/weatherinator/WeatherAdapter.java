@@ -59,6 +59,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         viewHolder.temperatureTextView.setText(weatherLocation.getWeatherMain().getTemp() + "°C");
         Uri imageSource = this.weatherDataset.get(position).GetImageSource();
 
+
+
         viewHolder.messageButton.setOnClickListener(this.onClickListener);
     }
 

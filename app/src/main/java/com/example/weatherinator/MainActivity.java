@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +27,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public List<LocalLocation> savedLocations = new ArrayList<>();
-    public boolean networkAvailable = true;
+    public boolean networkAvailable = false;
+    private boolean popup = false;
 
 
     @Override
@@ -39,6 +41,26 @@ public class MainActivity extends AppCompatActivity {
         startNetworkListener();
 
 
+        ConnectivityManager connMgr =
+            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        boolean isWifiConn = false;
+        boolean isMobileConn = false;
+        for (Network network : connMgr.getAllNetworks()) {
+            NetworkInfo networkInfo = connMgr.getNetworkInfo(network);
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                isWifiConn |= networkInfo.isConnected();
+            }
+            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                isMobileConn |= networkInfo.isConnected();
+            }
+        }
+
+        if(!isMobileConn && !isWifiConn){
+            ShowDialog();
+        }
+        else{
+            Init();
+        }
     }
 
     private void Init(){
@@ -99,14 +121,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onLost(Network network) {
                         // When network connection is lost, close the app
-                        ShowDialog();
                         networkAvailable = false;
+//                        ShowDialog();
                     }
 
                     @Override
                     public void onAvailable(Network network){
                         networkAvailable = true;
-                        Init();
+//                        ShowDialog();
+
                     }
                 }
 
@@ -121,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         // Add the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
+                System.exit(0);
             }
         });
         builder.setMessage("Geen internetverbinding gevonden");
@@ -129,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     public void CommitLocations (){
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         LocalManager.UpdateLocations(sharedPref,savedLocations);

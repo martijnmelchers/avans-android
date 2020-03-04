@@ -111,6 +111,10 @@ public class MainFragment extends Fragment {
             try {
                 MainActivity activity = (MainActivity)getActivity();
 
+
+                if(activity == null){
+                    return;
+                }
                 if (!activity.networkAvailable){
                     Toast.makeText(getActivity().getApplicationContext(), "WIFI is uitgeschakeld", Toast.LENGTH_LONG).show();
                     return;
@@ -128,12 +132,14 @@ public class MainFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(), "WIFI is uitgeschakeld", Toast.LENGTH_LONG).show();
                     return;
                 }
-                
+
                 LocalLocation location = new LocalLocation(weather.getName());
                 location.setWeather(weather);
 
-                ((TextView)getView().findViewById(R.id.currentGPSLocation)).setText(weather.getName());
-                ((TextView)getView().findViewById(R.id.currentTemp)).setText(weather.getWeatherMain().getTemp() + getString(R.string.celciusText));
+                if(getView() != null){
+                    ((TextView)getView().findViewById(R.id.currentGPSLocation)).setText(weather.getName());
+                    ((TextView)getView().findViewById(R.id.currentTemp)).setText(weather.getWeatherMain().getTemp() + getString(R.string.celciusText));
+                }
 
                 //adapter.addLocation(location);
             } catch (ExecutionException e) {
